@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.waifu.Adapter.MyImageAdapter
 import com.example.waifu.Common.Common
@@ -14,6 +15,7 @@ import com.example.waifu.R
 
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,12 +36,12 @@ class MainActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
         recyclerMovieList.layoutManager = layoutManager
         dialog = SpotsDialog.Builder().setCancelable(true).setContext(this).build()
-
         getAllImageList()
     }
 
     private fun getAllImageList() {
         dialog.show()
+        CoroutineScope(Dispatchers.IO).launch {
         mService.getImageList().enqueue(object : Callback<Image> {
             override fun onFailure(call: Call<Image>, t: Throwable) {
                 Log.e("sdfgh", t.toString())
@@ -53,6 +55,6 @@ class MainActivity : AppCompatActivity() {
 
                 dialog.dismiss()
             }
-        })
+        })}
     }
 }
